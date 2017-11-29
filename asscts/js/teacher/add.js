@@ -5,16 +5,18 @@
 //可以根据路由参数的传入,判断是进入讲师添加还是讲师编辑列表,根据webapi的接口文档知道进入讲师添加和编辑的不同之处
 //在于编辑需要传入tc_id的值,而添加不需要,所以可以判断路由参数的长度来确定需要跳入添加还是编辑页面;
 
-define(["template","jquery"],function(template,$){
+define(
+	["template", "jquery", "jqueryForm" ,"zhCN","jqueryValidate"],
+	function(template,$){
 	//1.获取路由参数;
 	var search=location.search;
 
 	//2.判断路由参数的长短跳转相对应的页面;
 	if(search.length>0){//跳转编辑页面
-		console.log("我是编辑页面,需要ajax数据填充基本的数据");
+		console.log("我是编辑页面");
 		editTeacherInfo();
 	}else{//跳转添加页面
-		console.log("我是添加页面,需要自己编写信息");
+		console.log("我是添加页面");
 		addTeacherInfo();
 	}
 
@@ -36,7 +38,7 @@ define(["template","jquery"],function(template,$){
 				//点击编辑按钮 将修改的值传给服务器,并跳转到讲师列表
 				$("#addTeacher").on("submit","#teacherFrom",function(){
 					//获取需要name与值的拼接字符串  请求服务器 添加数据;
-					var editStr=$(this).serialize();
+					/*var editStr=$(this).serialize();
 					$.ajax({
 						url:"/api/teacher/update",
 						type:"post",
@@ -47,7 +49,20 @@ define(["template","jquery"],function(template,$){
 								location.pathname="/teacher/list"
 							}
 						}
+					})*/
+
+					//jquery-form替换请求：
+					$(this).ajaxSubmit({
+						url:"/api/teacher/update",
+						type:"post",
+						success:function(res){
+							if(res.code==200){
+								alert("修改成功！");
+								location.pathname="/teacher/list"
+							}
+						}
 					})
+
 					return false;
 				})
 			}
@@ -65,7 +80,7 @@ define(["template","jquery"],function(template,$){
 		//--->当点击按钮的时候请求
 		$("#addTeacher").on("submit","#teacherFrom",function(){
 			
-			var params=$(this).serialize();
+			/*var params=$(this).serialize();
  			$.ajax({
 				url:"/api/teacher/add",
 				type:"post",
@@ -77,10 +92,46 @@ define(["template","jquery"],function(template,$){
 						location.pathname="/teacher/list";
 					}					
 				}
+			})*/
+
+
+ 			//jquery-form的请求插件使用：
+			$(this).ajaxSubmit({
+				url:"/api/teacher/add",
+				type:"post",
+				success:function(res){
+					console.log(res);
+					if(res.code==200){
+						alert("数据添加成功!");
+						location.pathname="/teacher/list";
+					}
+				}
 			})
+
+
 			return false;
 		})
 	}
 
 
+	//3.jqueryValidata表单验证--调用;
+	$("#teacherFrom").validate({
+			description:{
+				show:{
+					required:"请输入内容"
+				},
+				showPas:{
+					required:"请输入密码",
+					conditional:"请输入大于四位数字的密码"
+				}
+			},
+			conditional:{
+				pasSave:function(params){
+					if(params.length<4){
+						return false;
+					}
+					return true;
+				}
+			}
+		});
 })

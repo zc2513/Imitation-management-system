@@ -41,8 +41,13 @@
                                        class="form-control input-sm" 
                                        name="tc_name"
                                        placeholder="讲师名称"
-                                       value="{{tc_name}}">
+                                       value="{{tc_name}}"
+                                       data-required
+                                       data-describedby="from-name"
+                                       data-description="show"
+                                       >
                             </div>
+                            <div id="from-name" style="line-height:30px; color:red;"></div>
                         </div>
                         {{if !tc_name}}
                         <div class="form-group">
@@ -50,8 +55,14 @@
                             <div class="col-md-4">
                                 <input type="password" 
                                        name="tc_pass"
-                                       class="form-control input-sm">
+                                       class="form-control input-sm"
+                                       data-required
+                                       data-conditional="pasSave"
+                                       data-describedby="from-password"
+                                       data-description="showPas" 
+                                       >
                             </div>
+                            <div id="from-password" style="line-height:30px; color:red;"></div>
                         </div>
                         {{/if}}
                         <div class="form-group">
@@ -60,7 +71,11 @@
                                 <input type="text" 
                                        name="tc_join_date"
                                        class="form-control input-sm"
-                                       value="{{tc_join_date}}">
+                                       value="{{tc_join_date}}"
+                                       data-provide="datepicker"
+                                       data-date-autoclose="true"
+                                       data-date-format="yyyy-mm-dd"
+                                       data-date-language="zh-CN">
                             </div>
                         </div>
                         <div class="form-group">
